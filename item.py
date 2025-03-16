@@ -1,4 +1,4 @@
-import csv 
+import csv
 
 class Item:
     pay_rate=0.8#20% discount here
@@ -10,18 +10,41 @@ class Item:
         assert quantity>=0,f"Quantity {quantity} is not grater than or equal to zero"
         
         #self objects are assigned
-        self.name=name
-        self.price=price
+        self.__name=name#__ means read only attribute and _ means you cant change name
+        self.__price=price
         self.quantity=quantity
 
         Item.all.append(self)
+
+    @property
+    def price(self):
+        return self.__price
+    
+    def apply_discount(self):
+        self.__price=self.__price*Item.pay_rate
+
+    def apply_increament(self):
+        self.__price=self.__price*self.pay_rate
+
+    @property
+    def name(self):
+        # print("Get name")
+        return self.__name
+
+    @name.setter#always need parameter
+    def name(self,value):
+        # print("Trying to set name")
+        if len(value)>=10:
+            raise Exception("The name is too long")
+        self.__name=value
+    
     # def calculate_total_price(self,x,y):#methods
     #     return x*y
     def calculate_total_price(self):
-        return self.price*self.quantity
+        return self.__price*self.quantity
     
-    def apply_discount(self):
-        self.price=self.price*Item.pay_rate
+    # def apply_discount(self):
+    #     self.__price=self.__price*Item.pay_rate
 
     @classmethod
     def instantiate_from_csv(cls):
@@ -47,8 +70,30 @@ class Item:
 
     def __repr__(self):
         # return f"Item('{self.name},{self.price},{self.quantity}')"
-        return f"Item('{self.__class__.__name__},{self.name},{self.price},{self.quantity}')"
+        return f"Item('{self.__class__.__name__},{self.name},{self.__price},{self.quantity}')"
+    
+    def connect(self,smpt_server):
+        pass
 
+    def prepare_body(self):
+        return f"""
+        Hello Pal.
+        We have {self.name} {self.quantity} times.
+        Regards Spryzens
+        """
+    
+    def send(self):
+        pass
+    
+    def send_email(self):
+        self.__connect('')
+        self.__prepare_body()
+        self.__send()
+
+
+    # @property
+    # def read_only_name(self):
+    #     return "AAA"
 #item1=Item("Photo",20,5)#instance
 # print(item1.apply_discount())
 # print(item1.price)
@@ -107,32 +152,32 @@ class Item:
 
 # print(Item.is_integer(7.5))
 
-class Phone(Item):
-    # all=[]
-    def __init__(self,name:str,price:float,quantity=0,broken_phones=0):#magic methods
-        # print(f"An instance created:{name}")
-        super().__init__(
-            name,price,quantity
-        )
-        assert price >=0,f"Price{price} is not grater than or equal to zero"
-        assert quantity>=0,f"Quantity {quantity} is not grater than or equal to zero"
-        assert broken_phones>=0,f"Broken Phones{broken_phones}"
-        #self objects are assigned
-        self.name=name
-        self.price=price
-        self.quantity=quantity
-        self.broken_phones=broken_phones
+# class Phone(Item):
+#     # all=[]
+#     def __init__(self,name:str,price:float,quantity=0,broken_phones=0):#magic methods
+#         # print(f"An instance created:{name}")
+#         super().__init__(
+#             name,price,quantity
+#         )
+#         assert price >=0,f"Price{price} is not grater than or equal to zero"
+#         assert quantity>=0,f"Quantity {quantity} is not grater than or equal to zero"
+#         assert broken_phones>=0,f"Broken Phones{broken_phones}"
+#         #self objects are assigned
+#         self.name=name
+#         self.price=price
+#         self.quantity=quantity
+#         self.broken_phones=broken_phones
 
-        # Item.all.append(self)
-        # Phone.all.append(self)
+#         # Item.all.append(self)
+#         # Phone.all.append(self)
 
 
-phone1=Phone("samsung",500,5,1)
-print(phone1.calculate_total_price())
-# phone1.broken_phones=1
-phone2=Phone("redmi",700,5,1)
-print(phone2.calculate_total_price())
-# phone2.broken_phones=1
+# phone1=Phone("samsung",500,5,1)
+# print(phone1.calculate_total_price())
+# # phone1.broken_phones=1
+# phone2=Phone("redmi",700,5,1)
+# print(phone2.calculate_total_price())
+# # phone2.broken_phones=1
 
-print(Item.all)
-print(Phone.all)
+# print(Item.all)
+# print(Phone.all)
